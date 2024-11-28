@@ -39,12 +39,13 @@ readableStream.on('end', () => {
 const transformStream = new Transform({
     transform(chunk, encoding, callback) {
         const data = chunk.toString();
-        const r = 8.314;
-        const volume = 0.005; // 1 m3
-        const [pressure, mass] = data.split(','); // atm, mol
+        const r = 0.0821;
+        const volume = 5;
+        let [temperature, mass] = data.split(','); // atm, mol
         // Presion * Volumen = R * masa * Temperatura (PV = rTN)
-        const temperature = (pressure*101325*volume)/(mass*r);
-        this.push(`Temperature: ${temperature - 273.15}°C\n`);
+        temperature = Number(temperature) + 273.15
+        const pressure = (r*temperature*Number(mass)) / (volume);
+        this.push(`Pressure: ${pressure.toFixed(2)}atm\n`);
         callback();
     }
 });
